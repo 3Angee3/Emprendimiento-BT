@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ReparaPC – Prototipo de alta definición</title>
+<style>
+:root{--bg:#dfe7ef;--win:#f7f9fb;--side:#eaeff5;--ink:#17212b;--mute:#5b6b7b;--line:#d3dce6;--acc:#0b6bcb;--acc-ink:#fff;--ok:#1b7f55;--warn:#a8650c;--con:#0f1720;--con-ink:#cfe3f5;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0b1118;--win:#151d27;--side:#101821;--ink:#e6edf4;--mute:#8fa1b3;--line:#263341;--acc:#4da3ff;--acc-ink:#04101d;--ok:#4cc38a;--warn:#e2a24a;--con:#070b10;--con-ink:#b9d6ee}}
+:root[data-theme="dark"]{--bg:#0b1118;--win:#151d27;--side:#101821;--ink:#e6edf4;--mute:#8fa1b3;--line:#263341;--acc:#4da3ff;--acc-ink:#04101d;--ok:#4cc38a;--warn:#e2a24a;--con:#070b10;--con-ink:#b9d6ee}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 "Segoe UI",system-ui,-apple-system,Roboto,sans-serif;display:flex;justify-content:center;padding:20px 12px}
+.win{width:100%;max-width:980px;background:var(--win);border:1px solid var(--line);border-radius:10px;overflow:hidden;box-shadow:0 18px 50px rgba(10,25,40,.18)}
+.bar{display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--side);border-bottom:1px solid var(--line);font-size:13px}
+.bar b{font-weight:600}.bar .sp{flex:1}
+.pill{padding:2px 9px;border-radius:99px;font-size:12px;border:1px solid var(--line);color:var(--mute)}
+.pill.on{color:var(--ok);border-color:var(--ok)}
+.ctl{display:flex;gap:6px}.ctl i{width:12px;height:12px;border-radius:50%;background:var(--line)}
+.body{display:grid;grid-template-columns:190px 1fr;min-height:560px}
+nav{background:var(--side);border-right:1px solid var(--line);padding:12px 8px;display:flex;flex-direction:column;gap:4px}
+nav button{all:unset;cursor:pointer;padding:9px 12px;border-radius:6px;color:var(--mute)}
+nav button:hover{background:var(--line)}
+nav button[aria-selected=true]{background:var(--win);color:var(--ink);font-weight:600;box-shadow:inset 3px 0 0 var(--acc)}
+nav small{margin-top:auto;color:var(--mute);padding:8px 12px;font-size:12px}
+main{padding:22px 26px;min-width:0}
+h1{font-size:22px;margin:0 0 4px;font-weight:600}
+.sub{color:var(--mute);margin:0 0 18px}
+.hero{display:flex;gap:14px;align-items:center;justify-content:space-between;background:var(--side);border:1px solid var(--line);border-radius:10px;padding:18px 20px;margin-bottom:16px;flex-wrap:wrap}
+.hero p{margin:2px 0 0;color:var(--mute)}
+.btn{font:inherit;cursor:pointer;border:1px solid var(--line);background:var(--win);color:var(--ink);padding:8px 14px;border-radius:6px}
+.btn:hover{border-color:var(--acc)}
+.btn.pri{background:var(--acc);color:var(--acc-ink);border-color:var(--acc);font-weight:600}
+.btn.big{padding:12px 22px;font-size:16px}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn:focus-visible,nav button:focus-visible,input:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px}
+.card{border:1px solid var(--line);border-radius:8px;padding:14px;display:flex;flex-direction:column;gap:8px;background:var(--win)}
+.card h3{margin:0;font-size:16px;font-weight:600}
+.card p{margin:0;color:var(--mute);font-size:13.5px;flex:1}
+.state{font-size:13px;color:var(--mute)}.state.ok{color:var(--ok)}
+.prog{height:6px;background:var(--line);border-radius:4px;overflow:hidden}
+.prog span{display:block;height:100%;width:0;background:var(--acc);transition:width .25s}
+.con{background:var(--con);color:var(--con-ink);font:12.5px/1.5 Consolas,"Courier New",monospace;border-radius:8px;padding:12px 14px;height:150px;overflow:auto;margin-top:16px;white-space:pre-wrap}
+.tools{display:flex;gap:10px;margin-bottom:12px;flex-wrap:wrap}
+input[type=search]{font:inherit;flex:1;min-width:160px;padding:8px 10px;border:1px solid var(--line);border-radius:6px;background:var(--win);color:var(--ink)}
+.tw{overflow-x:auto}
+table{border-collapse:collapse;width:100%;min-width:620px}
+th,td{text-align:left;padding:9px 8px;border-bottom:1px solid var(--line);vertical-align:top;font-size:13.5px}
+th{color:var(--mute);font-weight:600}
+code{font:12px Consolas,monospace;color:var(--mute);word-break:break-all}
+.stars{color:var(--warn);white-space:nowrap}
+.hist li{padding:9px 0;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:10px}
+.hist{list-style:none;margin:0;padding:0}
+.note{margin-top:16px;font-size:12.5px;color:var(--mute)}
+[hidden]{display:none!important}
+@media(max-width:680px){.body{grid-template-columns:1fr}nav{flex-direction:row;overflow-x:auto;border-right:0;border-bottom:1px solid var(--line)}nav small{display:none}main{padding:16px}}
+@media(prefers-reduced-motion:reduce){.prog span{transition:none}}
+</style>
+</head>
+<body>
+<div class="win" role="application" aria-label="Prototipo ReparaPC">
+  <div class="bar"><div class="ctl" aria-hidden="true"><i></i><i></i><i></i></div><b>ReparaPC</b><span class="pill on">Sin conexión · funciona offline</span><span class="sp"></span><span class="pill">Windows 11 · v0.1 prototipo</span></div>
+  <div class="body">
+    <nav role="tablist" aria-label="Secciones">
+      <button role="tab" aria-selected="true" data-t="asis">Modo asistido</button>
+      <button role="tab" aria-selected="false" data-t="tec">Modo técnico</button>
+      <button role="tab" aria-selected="false" data-t="his">Historial</button>
+      <small>Ejecutable portátil, listo para USB</small>
+    </nav>
+    <main>
+      <section id="asis">
+        <h1>¿Qué le pasa a tu equipo?</h1>
+        <p class="sub">Elige una opción y la herramienta se encarga. No necesitas escribir comandos.</p>
+        <div class="hero"><div><b style="font-size:17px">Reparar todo</b><p>Limpia, revisa el sistema y restablece la red en un solo paso.</p></div><button class="btn pri big" id="all">Reparar todo con un clic</button></div>
+        <div class="grid" id="cards"></div>
+      </section>
+      <section id="tec" hidden>
+        <h1>Biblioteca de scripts</h1>
+        <p class="sub">Rutinas listas para campo, con su comando, descripción y valoración del equipo de soporte.</p>
+        <div class="tools"><input type="search" id="q" placeholder="Buscar script o comando" aria-label="Buscar script"><button class="btn" id="clr">Limpiar consola</button></div>
+        <div class="tw"><table><thead><tr><th>Script</th><th>Descripción</th><th>Valoración</th><th></th></tr></thead><tbody id="rows"></tbody></table></div>
+      </section>
+      <section id="his" hidden>
+        <h1>Historial de acciones</h1>
+        <p class="sub">Registro de lo que se ejecutó en esta sesión.</p>
+        <ul class="hist" id="hl"><li><span class="state">Aún no has ejecutado ninguna acción. Prueba el modo asistido.</span></li></ul>
+      </section>
+      <div class="con" id="con" role="log" aria-live="polite">Consola lista. Esperando una acción…</div>
+      <p class="note">Prototipo de alta definición: la interfaz y las interacciones son realistas, pero las acciones están simuladas y no modifican tu equipo.</p>
+    </main>
+  </div>
+</div>
+<script>
+var $=function(s){return document.querySelector(s)};
+var TASKS=[
+ {id:"limp",n:"Limpiar basura",d:"Borra temporales, caché de actualizaciones y registros que ocupan espacio.",steps:["Analizando %TEMP% …","Vaciando SoftwareDistribution\\Download …","Limpiando registros de eventos …","Liberando espacio …"],r:"Se liberaron 4,8 GB"},
+ {id:"sis",n:"Reparar sistema",d:"Revisa y repara archivos dañados tras actualizaciones de Windows.",steps:["Ejecutando sfc /scannow …","Comprobando imagen con DISM …","Restaurando componentes dañados …","Verificando integridad …"],r:"3 archivos reparados"},
+ {id:"red",n:"Reparar conexión",d:"Restablece IP, DNS y tabla ARP cuando se pierde la red sin causa clara.",steps:["Liberando y renovando IP …","Purgando caché DNS …","Limpiando tabla ARP …","Restableciendo Winsock …"],r:"Conexión restablecida"}
+];
+var SCRIPTS=[
+ ["Limpiar temporales","del /q /f /s %TEMP%\\*","Elimina archivos temporales del usuario.",4.5,"limp"],
+ ["Vaciar caché de actualizaciones","net stop wuauserv && rd /s /q C:\\Windows\\SoftwareDistribution\\Download","Libera espacio y corrige descargas de parches atascadas.",4,"limp"],
+ ["Verificar integridad (SFC)","sfc /scannow","Busca y repara archivos de sistema protegidos.",5,"sis"],
+ ["Reparar imagen (DISM)","DISM /Online /Cleanup-Image /RestoreHealth","Repara la imagen de Windows cuando SFC no basta.",4.5,"sis"],
+ ["Purgar caché DNS","ipconfig /flushdns","Soluciona páginas que no cargan con la red activa.",4.5,"red"],
+ ["Renovar IP","ipconfig /release && ipconfig /renew","Pide una nueva dirección IP al router.",4,"red"],
+ ["Limpiar tabla ARP","netsh interface ip delete arpcache","Quita asignaciones obsoletas que bloquean la red.",3.5,"red"],
+ ["Restablecer Winsock","netsh winsock reset","Repara la pila de red corrupta. Pide reiniciar.",4,"red"]
+];
+var busy=false,hist=[];
+function log(t,c){var o=$("#con");if(c)o.textContent="";o.textContent+=(o.textContent&&!c?"\n":"")+t;o.scrollTop=o.scrollHeight}
+function stars(n){var s="";for(var i=1;i<=5;i++)s+=i<=n?"★":(i-.5<=n?"⯨":"☆");return s}
+function run(t,cb){
+ var steps=t.steps,i=0,p=document.querySelector('[data-p="'+t.id+'"]'),st=document.querySelector('[data-s="'+t.id+'"]');
+ log("> "+t.n,false);if(st){st.textContent="Ejecutando…";st.className="state"}
+ (function next(){
+  if(i>=steps.length){if(p)p.style.width="100%";if(st){st.textContent="✔ "+t.r;st.className="state ok"}
+   log("✔ "+t.r);hist.unshift([t.n,t.r,new Date().toLocaleTimeString("es-CO")]);drawH();cb&&cb();return}
+  log(steps[i]);if(p)p.style.width=((i+1)/steps.length*100)+"%";i++;setTimeout(next,650)
+ })()
+}
+function runTask(t,cb){if(busy)return;busy=true;lock(true);var p=document.querySelector('[data-p="'+t.id+'"]');if(p)p.style.width="0";run(t,function(){busy=false;lock(false);cb&&cb()})}
+function lock(b){document.querySelectorAll(".btn").forEach(function(x){if(x.id!=="clr")x.disabled=b})}
+function drawH(){$("#hl").innerHTML=hist.map(function(h){return"<li><span><b>"+h[0]+"</b><br><span class='state ok'>"+h[1]+"</span></span><span class='state'>"+h[2]+"</span></li>"}).join("")}
+$("#cards").innerHTML=TASKS.map(function(t){return'<div class="card"><h3>'+t.n+'</h3><p>'+t.d+'</p><div class="prog"><span data-p="'+t.id+'"></span></div><div class="state" data-s="'+t.id+'">Listo para ejecutar</div><button class="btn pri" data-r="'+t.id+'">'+t.n+'</button></div>'}).join("");
+document.querySelectorAll("[data-r]").forEach(function(b){b.onclick=function(){runTask(TASKS.filter(function(t){return t.id===b.dataset.r})[0])}});
+$("#all").onclick=function(){if(busy)return;var q=TASKS.slice(),go=function(){var t=q.shift();if(t)runTask(t,go)};go()};
+function drawS(){var f=$("#q").value.toLowerCase();
+ $("#rows").innerHTML=SCRIPTS.map(function(s,i){return[s,i]}).filter(function(a){return(a[0][0]+a[0][1]+a[0][2]).toLowerCase().indexOf(f)>-1}).map(function(a){var s=a[0];return"<tr><td><b>"+s[0]+"</b><br><code>"+s[1]+"</code></td><td>"+s[2]+"</td><td class='stars' aria-label='"+s[3]+" de 5'>"+stars(s[3])+"<br><span class='state'>"+s[3]+"/5</span></td><td><button class='btn' data-x='"+a[1]+"'>Ejecutar</button></td></tr>"}).join("")||"<tr><td colspan='4' class='state'>Ningún script coincide. Prueba con otra palabra.</td></tr>";
+ document.querySelectorAll("[data-x]").forEach(function(b){b.onclick=function(){var s=SCRIPTS[b.dataset.x];if(busy)return;busy=true;lock(true);log("C:\\> "+s[1],true);setTimeout(function(){log("Completado: "+s[0]+" (simulado)");hist.unshift([s[0],"Ejecutado desde la biblioteca",new Date().toLocaleTimeString("es-CO")]);drawH();busy=false;lock(false)},900)}})}
+$("#q").oninput=drawS;$("#clr").onclick=function(){log("Consola lista.",true)};drawS();
+document.querySelectorAll("nav [role=tab]").forEach(function(b){b.onclick=function(){document.querySelectorAll("nav [role=tab]").forEach(function(x){x.setAttribute("aria-selected",x===b)});["asis","tec","his"].forEach(function(id){$("#"+id).hidden=id!==b.dataset.t})}});
+</script>
+</body>
+</html>
